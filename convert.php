@@ -1,7 +1,7 @@
 <?php
 
 $inputFolder = '/var/www/html/input';
-$inputFile = $inputFolder . '/' . basename($_FILES['file']['name']);
+$inputFile = $inputFolder . '/' . bin2hex(random_bytes(18)) . '.webm';
 $outputFolder = '/var/www/html/output';
 $outputFile = $outputFolder . '/' . bin2hex(random_bytes(18)) . '.mp4';
 
