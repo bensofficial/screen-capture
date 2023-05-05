@@ -16,7 +16,9 @@ COPY convert.php .
 COPY index.html .
 
 ENV file_uploads=On \
-    max_execution_time=60 \
+    max_execution_time=120 \
+    max_input_time=120 \
     post_max_size=512M \
     upload_max_filesize=512M \
     memory_limit=512M \
+    client_max_body_size=512M \
