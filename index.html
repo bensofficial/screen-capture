@@ -11,11 +11,11 @@
         }
         .centered-box {
             position: absolute;
-            top: calc(50% - 50px);
+            top: calc(50% - 70px);
             left: 50%;
             transform: translate(-50%, -50%);
             text-align: center;
-            height: 100px;
+            height: 140px;
             width: 250px;
             color: #333aff;
             background-color: #fff;
@@ -43,11 +43,13 @@
     <h1>screen-capture</h1>
     <button id="start-button" onclick="start()">Start Recording</button>
     <button id="stop-button" disabled onclick="stop()">Stop Recording</button>
+    <p id="status">Click "Start Recording" to start.</p>
 </div>
 </body>
 <script>
     const startButton = document.getElementById('start-button');
     const stopButton = document.getElementById('stop-button');
+    const status = document.getElementById('status');
 
     let completeBlob = null
     let recorder = null
@@ -55,6 +57,7 @@
     let stream = null
     async function start() {
         startButton.disabled = true;
+        status.innerHTML = 'Recording ...';
         try {
             stream = await navigator.mediaDevices.getDisplayMedia({
                 video: {
@@ -67,7 +70,8 @@
             recorder.onstop = onstop
             stopButton.disabled = false;
         } catch (error) {
-            window.alert(error)
+            status.innerHTML = 'An error occurred.';
+            console.log(error);
         }
     }
 
@@ -80,6 +84,7 @@
 
     async function onstop() {
         stopButton.disabled = true;
+        status.innerHTML = 'Converting to .mp4 file ...';
         completeBlob = new Blob(chunks, {
             type: chunks[0].type
         });
@@ -90,12 +95,18 @@
             method: 'POST',
             body: formData,
         });
+        if (!response.ok) {
+            status.innerHTML = 'An error occurred.';
+            console.log(response);
+            return;
+        }
 
         const videoUrl = await response.text();
         const downloadLink = document.createElement('a');
         downloadLink.href = videoUrl;
         downloadLink.download = 'recording.mp4';
         downloadLink.click();
+        status.innerHTML = 'Click "Start Recording" to start.';
         startButton.disabled = false;
     }
 </script>
